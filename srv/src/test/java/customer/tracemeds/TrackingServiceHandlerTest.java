@@ -8,11 +8,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import cds.gen.trackingservice.Batches;
+import cds.gen.trackingservice.TrackEvents;
 import cds.gen.trackingservice.TrackingService;
 import cds.gen.tracemeds.db.Batch;
 import cds.gen.tracemeds.db.Batch_;
 
-import java.util.UUID;
+import java.util.Collection;
+
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -53,5 +55,11 @@ void setup() {
 void recallBatch_marksBatchAsRecalled() {
     Batches result = trackingService.recallBatch(batchId, "Contamination detected in QA check");
     assertThat(result.getStatus()).isEqualTo("recalled");
+}
+@Test
+void getBatchHistory_returnsLoggedEvents() {
+    trackingService.recordScanEvent(batchId, "shipped", "Warehouse 1", "QA Tester");
+  Collection<TrackEvents> history = trackingService.getBatchHistory(batchId);
+    assertThat(history).isNotEmpty();
 }
 }

@@ -8,10 +8,16 @@ import com.sap.cds.services.handler.EventHandler;
 import com.sap.cds.services.handler.annotations.On;
 import com.sap.cds.services.handler.annotations.ServiceName;
 import com.sap.cds.services.persistence.PersistenceService;
+import cds.gen.trackingservice.TrackEvents;
+import cds.gen.trackingservice.TrackEvents_;
+import java.util.List;
+
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-
+import cds.gen.trackingservice.GetBatchHistoryContext;
 import cds.gen.trackingservice.RecordScanEventContext;
+
 import cds.gen.trackingservice.TrackingService_;
 import cds.gen.trackingservice.Batches;
 import cds.gen.tracemeds.db.Batch;
@@ -93,5 +99,13 @@ public void onRecallBatch(RecallBatchContext context) {
     Batches result = Struct.create(Batches.class);
     result.putAll(batch);
     context.setResult(result);
+}
+@On
+public void onGetBatchHistory(GetBatchHistoryContext context) {
+    String batchId = context.getBatchID();
+    List<TrackEvents> history = db.run(Select.from(TrackEvents_.class)
+            .where(e -> e.batch_ID().eq(batchId)))
+            .listOf(TrackEvents.class);
+    context.setResult(history);
 }
 }

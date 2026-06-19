@@ -11,4 +11,5 @@ service TrackingService @(path: '/tracking') {
 
 action recordScanEvent(batchID: UUID, eventType: String, location: String, scannedBy: String) returns Batches;
 action recallBatch(batchID: UUID, reason: String) returns Batches;
+function getBatchHistory(batchID: UUID) returns array of TrackEvents;
 }
