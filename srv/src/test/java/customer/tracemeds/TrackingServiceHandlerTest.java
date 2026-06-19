@@ -47,5 +47,11 @@ void setup() {
         assertThat(result).isNotNull();
         assertThat(result.getStatus()).isEqualTo("in_transit");
         assertThat(result.getCurrentHolder()).isEqualTo("Warehouse 1");
+ 
     }
+@Test
+void recallBatch_marksBatchAsRecalled() {
+    Batches result = trackingService.recallBatch(batchId, "Contamination detected in QA check");
+    assertThat(result.getStatus()).isEqualTo("recalled");
+}
 }
