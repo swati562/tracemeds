@@ -97,6 +97,7 @@ jobs:
       - name: Build and push Docker image
         uses: docker/build-push-action@v6
         with:
-          context: ./srv
+          context: .
+          file: ./srv/Dockerfile
           push: true
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/tracemeds:latest
