@@ -1,5 +1,5 @@
 package customer.tracemeds.handler;
-
+import cds.gen.trackingservice.RecallBatchContext;
 import com.sap.cds.Struct;
 import com.sap.cds.ql.Insert;
 import com.sap.cds.ql.Select;
@@ -8,10 +8,16 @@ import com.sap.cds.services.handler.EventHandler;
 import com.sap.cds.services.handler.annotations.On;
 import com.sap.cds.services.handler.annotations.ServiceName;
 import com.sap.cds.services.persistence.PersistenceService;
+import cds.gen.trackingservice.TrackEvents;
+import cds.gen.trackingservice.TrackEvents_;
+import java.util.List;
+
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-
+import cds.gen.trackingservice.GetBatchHistoryContext;
 import cds.gen.trackingservice.RecordScanEventContext;
+
 import cds.gen.trackingservice.TrackingService_;
 import cds.gen.trackingservice.Batches;
 import cds.gen.tracemeds.db.Batch;
@@ -70,4 +76,36 @@ public class TrackingServiceHandler implements EventHandler {
             default:         return "manufactured";
         }
     }
+
+    @On
+public void onRecallBatch(RecallBatchContext context) {
+    String batchId = context.getBatchID();
+    String reason = context.getReason();
+
+    TrackEvent event = TrackEvent.create();
+    event.setBatchId(batchId);
+    event.setEventType("recalled");
+    event.setRemarks(reason);
+    db.run(Insert.into(TrackEvent_.class).entry(event));
+
+    Batch batch = db.run(Select.from(Batch_.class).where(b -> b.ID().eq(batchId)))
+            .single(Batch.class);
+    batch.setStatus("recalled");
+
+    db.run(Update.entity(Batch_.class)
+            .data("status", "recalled")
+            .where(b -> b.ID().eq(batchId)));
+
+    Batches result = Struct.create(Batches.class);
+    result.putAll(batch);
+    context.setResult(result);
+}
+@On
+public void onGetBatchHistory(GetBatchHistoryContext context) {
+    String batchId = context.getBatchID();
+    List<TrackEvents> history = db.run(Select.from(TrackEvents_.class)
+            .where(e -> e.batch_ID().eq(batchId)))
+            .listOf(TrackEvents.class);
+    context.setResult(history);
+}
 }
