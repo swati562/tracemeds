@@ -9,7 +9,9 @@ service TrackingService @(path: '/tracking') {
   entity Batches       as projection on db.Batch;
   entity TrackEvents   as projection on db.TrackEvent;
 
-action recordScanEvent(batchID: UUID, eventType: String, location: String, scannedBy: String) returns Batches;
-action recallBatch(batchID: UUID, reason: String) returns Batches;
-function getBatchHistory(batchID: UUID) returns array of TrackEvents;
+  action recordScanEvent(batchID: UUID, eventType: String, location: String, scannedBy: String) returns Batches;
+  action recallBatch(batchID: UUID, reason: String) returns Batches;
+  function getBatchHistory(batchID: UUID) returns array of TrackEvents;
+  function isBatchExpired(batchID: UUID) returns Boolean;
+
 }
