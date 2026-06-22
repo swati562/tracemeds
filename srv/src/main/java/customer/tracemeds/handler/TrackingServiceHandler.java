@@ -3,7 +3,6 @@ package customer.tracemeds.handler;
 import cds.gen.trackingservice.RecallBatchContext;
 import cds.gen.trackingservice.GetBatchHistoryContext;
 import cds.gen.trackingservice.RecordScanEventContext;
-import cds.gen.trackingservice.IsBatchExpiredContext;
 import cds.gen.trackingservice.TrackingService_;
 import cds.gen.trackingservice.Batches;
 import cds.gen.trackingservice.TrackEvents;
@@ -113,13 +112,15 @@ public class TrackingServiceHandler implements EventHandler {
         context.setResult(history);
     }
 
-    @On
-    public void onIsBatchExpired(IsBatchExpiredContext context) {
-        String batchId = context.getBatchID();
-        Batch batch = db.run(Select.from(Batch_.class).where(b -> b.ID().eq(batchId)))
-                .single(Batch.class);
-        LocalDate expiry = batch.getExpiryDate();
-        boolean expired = expiry != null && expiry.isBefore(LocalDate.now());
-        context.setResult(expired);
-    }
+    // @On
+    // public void onIsBatchExpired(IsBatchExpiredContext context) {
+    //     String batchId = context.getBatchID();
+    //     Batch batch = db.run(Select.from(Batch_.class).where(b -> b.ID().eq(batchId)))
+    //             .single(Batch.class);
+    //     LocalDate expiry = batch.getExpiryDate();
+    //     boolean expired = expiry != null && expiry.isBefore(LocalDate.now());
+    //     context.setResult(expired);
+    // }
+
+
 }
