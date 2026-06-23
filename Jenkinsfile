@@ -32,6 +32,7 @@ pipeline {
             steps {
                 withCredentials([usernamePassword(credentialsId: 'cf-credentials', usernameVariable: 'CF_USERNAME', passwordVariable: 'CF_PASSWORD')]) {
                     sh '''
+                        echo "DEBUG: API=[$CF_API] ORG=[$CF_ORG] SPACE=[$CF_SPACE]"
                         curl -L "https://packages.cloudfoundry.org/stable?release=linux64-binary&version=v8&source=github" | tar -zx
                         chmod +x cf8
                         ./cf8 api $CF_API
