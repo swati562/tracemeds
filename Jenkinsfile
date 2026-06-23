@@ -37,8 +37,7 @@ pipeline {
                         ./cf8 api $CF_API
                         ./cf8 auth $CF_USERNAME $CF_PASSWORD
                         ./cf8 target -o $CF_ORG -s $CF_SPACE
-                        ./cf8 push tracemeds-srv -p srv/target/tracemeds-exec.jar -b sap_java_buildpack_jakarta                    '''
-                }
+                        ./cf8 push tracemeds-srv -p srv/target/tracemeds-exec.jar -b sap_java_buildpack_jakarta                }
             }
         }
     }
