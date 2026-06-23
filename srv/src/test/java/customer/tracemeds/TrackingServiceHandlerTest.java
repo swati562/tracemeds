@@ -63,16 +63,5 @@ void getBatchHistory_returnsLoggedEvents() {
   Collection<TrackEvents> history = trackingService.getBatchHistory(batchId);
     assertThat(history).isNotEmpty();
 }
-// @Test
-// void isBatchExpired_returnsTrueForExpiredBatch() {
-//     Batch expiredBatch = Batch.create();
-//     expiredBatch.setBatchNo("BATCH-EXPIRED");
-//     expiredBatch.setStatus("manufactured");
-//     expiredBatch.setExpiryDate(LocalDate.now().minusDays(10));
-//     var result = db.run(Insert.into(Batch_.class).entry(expiredBatch));
-//     String expiredBatchId = result.single(Batch.class).getId();
 
-//     boolean expired = trackingService.isBatchExpired(expiredBatchId);
-//     assertThat(expired).isTrue();
-// }
 }
