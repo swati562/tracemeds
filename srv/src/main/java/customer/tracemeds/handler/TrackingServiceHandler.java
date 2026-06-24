@@ -21,7 +21,6 @@ import com.sap.cds.services.handler.annotations.On;
 import com.sap.cds.services.handler.annotations.ServiceName;
 import com.sap.cds.services.persistence.PersistenceService;
 
-import java.time.LocalDate;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,7 +40,7 @@ public class TrackingServiceHandler implements EventHandler {
         String location = context.getLocation();
         String scannedBy = context.getScannedBy();
 
-        // 1. Log the scan event
+        // Log the scan event
         TrackEvent event = TrackEvent.create();
         event.setBatchId(batchId);
         event.setEventType(eventType);
@@ -112,7 +111,18 @@ public class TrackingServiceHandler implements EventHandler {
         context.setResult(history);
     }
 
-   
-
+  
+    private long countRecalledBatches() {
+        List<Batch> recalledBatches = db.run(
+                Select.from(Batch_.class).where(b -> b.status().eq("recalled")))
+                .listOf(Batch.class);
+        return recalledBatches.size();
+    }
+     private long countActiveBatches() {
+        List<Batch> activeBatches = db.run(
+                Select.from(Batch_.class).where(b -> b.status().ne("recalled")))
+                .listOf(Batch.class);
+        return activeBatches.size();
+    }
 
 }
