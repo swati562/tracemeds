@@ -118,5 +118,11 @@ public class TrackingServiceHandler implements EventHandler {
                 .listOf(Batch.class);
         return recalledBatches.size();
     }
+     private long countActiveBatches() {
+        List<Batch> activeBatches = db.run(
+                Select.from(Batch_.class).where(b -> b.status().ne("recalled")))
+                .listOf(Batch.class);
+        return activeBatches.size();
+    }
 
 }
